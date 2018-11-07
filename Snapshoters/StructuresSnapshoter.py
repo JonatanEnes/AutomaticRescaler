@@ -105,19 +105,24 @@ def persist_applications(container_resources_dict):
 
         application_containers = app["containers"]
         for container_name in application_containers:
-            for resource in RESOURCES:
-                if container_name in container_resources_dict and container_resources_dict[container_name][
-                    "resources"][resource][translate_map[resource]["limit_label"]]:
 
-                    app["resources"][resource]["current"] += \
-                        container_resources_dict[container_name]["resources"][resource][
-                            translate_map[resource]["limit_label"]]
-                else:
+            if container_name not in container_resources_dict:
+                MyUtils.logging_error(
+                    "Container info {0} is missing for app : {1}".format(container_name, app["name"])
+                    + " app info will not be totally accurate", debug)
+                continue
+
+            for resource in RESOURCES:
+                try:
+                    current_resource_label = translate_map[resource]["limit_label"]
+                    container_resources = container_resources_dict[container_name]["resources"]
+                    app["resources"][resource]["current"] += container_resources[resource][current_resource_label]
+                except KeyError:
                     if "name" in container_resources_dict[container_name] and "name" in app:
                         MyUtils.logging_error(
                             "Container info {0} is missing for app : {1} and resource {2} resource,".format(
                                 container_name, app["name"], resource)
-                            +" app info will not be totally accurate", debug)
+                            + " app info will not be totally accurate", debug)
                     else:
                         MyUtils.logging_error("Error with app or container info", debug)
                         # TODO this error should be more self-explanatory
@@ -132,17 +137,28 @@ def get_container_resources_dict():
 
     # Retrieve each container resources, persist them and store them to generate host info
     container_resources_dict = dict()
+    host_node_resources_dict = dict()
 
     for container in containers:
         container_name = container["name"]
+        container_host_name = container["host"]
 
-        resources = MyUtils.get_container_resources(container, rescaler_http_session, debug)
-        if not resources:
+        if container_host_name not in host_node_resources_dict:
+            container_host_ip = container["host_rescaler_ip"]
+            container_host_port = container["host_rescaler_port"]
+            container_host_resources = MyUtils.get_host_containers(container_host_ip, container_host_port,
+                                                                   rescaler_http_session, debug)
+
+            host_node_resources_dict[container_host_name] = container_host_resources
+
+        if container_name in host_node_resources_dict[container_host_name]:
+            resources = host_node_resources_dict[container_host_name][container_name]
+            # resources = MyUtils.get_container_resources(container, rescaler_http_session, debug)
+            container_resources_dict[container_name] = container
+            container_resources_dict[container_name]["resources"] = resources
+        else:
             MyUtils.logging_error("Couldn't get container's {0} resources".format(container_name), debug)
-            continue
 
-        container_resources_dict[container_name] = container
-        container_resources_dict[container_name]["resources"] = resources
     return container_resources_dict
 
 

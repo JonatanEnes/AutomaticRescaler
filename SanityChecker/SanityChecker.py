@@ -138,6 +138,41 @@ def check_core_mapping():
             "Error doing core mapping check up: {0} {1}".format(str(e), str(traceback.format_exc())), debug)
 
 
+def check_memory_used():
+    try:
+        containers = MyUtils.get_structures(db_handler, debug, subtype="container")
+        host_info_cache = dict()
+        host_memory_used = dict()
+
+        for container in containers:
+            if container["host"] not in host_info_cache:
+                host_info_cache[container["host"]] = db_handler.get_structure(container["host"])
+                host_memory_used[container["host"]] = 0
+
+            database_resources = container["resources"]
+            real_resources = MyUtils.get_container_resources(container, rescaler_http_session, debug)
+            if not real_resources:
+                MyUtils.logging_error(
+                    "Couldn't get container's {0} resources, can't check memory sanity".format(container["name"]), debug)
+                return
+
+            current_mem_limit = get_current_resource_value(database_resources, real_resources, "mem")
+            host_memory_used[container["host"]] += current_mem_limit
+
+        for host in host_info_cache:
+            host_memory_info = host_info_cache[host]["resources"]["mem"]
+            used_memory = host_memory_info["max"] - host_memory_info["free"]
+            if host_memory_used[host] != used_memory:
+                MyUtils.logging_error("Detected invalid accounting of used memory for host {0}".format(host) +
+                                      ", trying to automatically fix.", debug)
+                new_host_info = host_info_cache[host]
+                new_host_info["resources"]["mem"]["free"] = host_memory_info["max"] - host_memory_used[host]
+                db_handler.update_structure(new_host_info, max_tries=1)
+    except Exception as e:
+        MyUtils.logging_error(
+            "Error doing memory check up: {0} {1}".format(str(e), str(traceback.format_exc())), debug)
+
+
 def check_sanity():
     logging.basicConfig(filename=SERVICE_NAME + '.log', level=logging.INFO)
     global debug
@@ -153,6 +188,7 @@ def check_sanity():
         compact_databases()
         check_unstable_configuration()
         check_core_mapping()
+        check_memory_used()
         MyUtils.logging_info("Sanity checked at {0}".format(MyUtils.get_time_now_string()), debug)
 
         time_waited = 0

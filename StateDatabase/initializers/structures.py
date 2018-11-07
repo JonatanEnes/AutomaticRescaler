@@ -8,21 +8,24 @@ database = "structures"
 initializer_utils.remove_db(database)
 initializer_utils.create_db(database)
 
-containers = ["node0", "node1", "node2", "node3", "node4", "node5"]
-hosts = ["c14-13"]
+containers = [("node0", "c14-13"), ("node1", "c14-13"), ("node2", "c14-13"), ("node3", "c14-13"), ("node4", "c14-13"),
+              ("node5", "c14-13"), ("node6", "c14-12"), ("node7", "c14-12"), ("node8", "c14-12"), ("node9", "c14-12"),
+              ("node10", "c14-12"), ("node11", "c14-12")]
+hosts = ["c14-13", "c14-12"]
 
 # CREATE STRUCTURES
 if handler.database_exists("structures"):
     print("Adding 'structures' documents")
     for c in containers:
+        container_name, container_host = c
         container = dict(
             type='structure',
             subtype='container',
             guard_policy="serverless",
-            host='c14-13',
-            host_rescaler_ip='c14-13',
+            host=container_host,
+            host_rescaler_ip=container_host,
             host_rescaler_port='8000',
-            name=c,
+            name=container_name,
             guard=True,
             resources=dict(
                 cpu=dict(max=200, min=40, fixed=150, guard=True),
@@ -60,6 +63,7 @@ if handler.database_exists("structures"):
             net=dict(max=1200, min=600, guard=False),
             energy=dict(max=120, min=0, guard=True)
         ),
-        containers=["node0", "node1", "node2", "node3", "node4", "node5"]
+        containers=["node0", "node1", "node2", "node3", "node4", "node5", "node6", "node7", "node8", "node9", "node10",
+                    "node11"]
     )
     handler.add_structure(app)

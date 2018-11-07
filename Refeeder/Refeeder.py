@@ -100,9 +100,9 @@ def generate_container_energy_metrics(container, host_info):
     new_container = MyUtils.copy_structure_base(container)
     new_container["resources"] = dict()
     new_container["resources"]["energy"] = dict()
-    # TODO FIX ZeroDivisionError
-    new_container["resources"]["energy"]["usage"] = float(
-        host_info["energy"] * (container_info["cpu"] / host_info["cpu"]))
+    if int(host_info["cpu"]) > 0:
+        new_container["resources"]["energy"]["usage"] = float(
+            host_info["energy"] * (container_info["cpu"] / host_info["cpu"]))
 
     return new_container
 

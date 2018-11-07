@@ -14,7 +14,7 @@
     "mem_limit": "10240"
   },
   "net": {
-    "device_name_in_host": "vethDPUPEL",
+    "device_name_in_host": "vethS7BSDP",
     "net_limit": 200
   }
 }

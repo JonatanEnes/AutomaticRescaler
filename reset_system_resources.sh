@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DEV_PATH=$HOME/development
+DEV_PATH=$HOME/production
 export RESCALER_PATH=$DEV_PATH/automatic-rescaler
 
 echo "Setting container resources"

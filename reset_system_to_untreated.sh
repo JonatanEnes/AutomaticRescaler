@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-DEV_PATH=$HOME/development
+DEV_PATH=$HOME/production
 export RESCALER_PATH=$DEV_PATH/automatic-rescaler
 
-nodes=( node0 node1 node2 node3 node4 node5 )
+nodes=( node0 node1 node2 node3 node4 node5 node6 node7 node8 node9 node10 node11 )
 resources=( cpu mem disk net energy )
 resource_rules=( CpuRescaleDown CpuRescaleUp MemRescaleDown MemRescaleUp cpu_dropped_lower cpu_exceeded_upper mem_dropped_lower mem_exceeded_upper )
 energy_rules=( EnergyRescaleDown EnergyRescaleUp energy_dropped_lower energy_exceeded_upper )
@@ -30,12 +30,6 @@ for j in "${resources[@]}"
 do
     bash $RESCALER_PATH/Orchestrator/Structures/set_many_resource_to_unguarded.sh app1 ${resources[@]} > /dev/null
 done
-
-#echo "Setting container resources [cpu] to normal"
-#for i in "${nodes[@]}"
-#do
-#    bash $RESCALER_PATH/Orchestrator/Structures/set_structure_cpu_max.sh $i 200 > /dev/null
-#done
 
 echo "Deactivating resource rules"
 for i in "${resource_rules[@]}"

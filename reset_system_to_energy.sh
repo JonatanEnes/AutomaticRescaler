@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DEV_PATH=$HOME/development
+DEV_PATH=$HOME/production
 export RESCALER_PATH=$DEV_PATH/automatic-rescaler
 
 nodes=( node0 node1 node2 node3 node4 node5 )
@@ -30,12 +30,6 @@ for i in "${nodes[@]}"
 do
     bash $RESCALER_PATH/Orchestrator/Structures/set_many_resource_to_unguarded.sh $i ${resources[@]} > /dev/null
 done
-
-#echo "Setting container resources [cpu] to normal"
-#for i in "${nodes[@]}"
-#do
-#    bash $RESCALER_PATH/Orchestrator/Structures/set_structure_cpu_max.sh $i 200 > /dev/null
-#done
 
 echo "Activating energy rules"
 for i in "${energy_rules[@]}"
