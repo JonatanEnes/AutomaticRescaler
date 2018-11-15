@@ -7,11 +7,11 @@ resources=( cpu mem disk net energy )
 resource_rules=( CpuRescaleDown CpuRescaleUp MemRescaleDown MemRescaleUp cpu_dropped_lower cpu_exceeded_upper mem_dropped_lower mem_exceeded_upper )
 energy_rules=( EnergyRescaleDown EnergyRescaleUp energy_dropped_lower energy_exceeded_upper )
 
-echo "Setting Guardian to guard containers"
-bash $RESCALER_PATH/Orchestrator/Guardian/set_to_container.sh > /dev/null
+#echo "Setting Guardian to guard containers"
+#bash $RESCALER_PATH/Orchestrator/Guardian/set_to_container.sh > /dev/null
 
-echo "Setting application to unguarded"
-bash $RESCALER_PATH/Orchestrator/Structures/set_to_unguarded.sh app1 > /dev/null
+#echo "Setting application to unguarded"
+#bash $RESCALER_PATH/Orchestrator/Structures/set_to_unguarded.sh app1 > /dev/null
 
 echo "Setting container nodes to unguarded"
 for i in "${nodes[@]}"
@@ -19,26 +19,26 @@ do
 	bash $RESCALER_PATH/Orchestrator/Structures/set_to_unguarded.sh $i > /dev/null
 done
 
-echo "Setting container resources [cpu,mem,disk,net,energy] to unguarded"
-for i in "${nodes[@]}"
-do
-    bash $RESCALER_PATH/Orchestrator/Structures/set_many_resource_to_unguarded.sh $i ${resources[@]} > /dev/null
-done
-
-echo "Setting application resources [cpu,mem,disk,net,energy] to unguarded"
-for j in "${resources[@]}"
-do
-    bash $RESCALER_PATH/Orchestrator/Structures/set_many_resource_to_unguarded.sh app1 ${resources[@]} > /dev/null
-done
-
-echo "Deactivating resource rules"
-for i in "${resource_rules[@]}"
-do
-    bash $RESCALER_PATH/Orchestrator/Rules/deactivate_rule.sh $i > /dev/null
-done
-
-echo "Deactivating energy rules"
-for i in "${energy_rules[@]}"
-do
-    bash $RESCALER_PATH/Orchestrator/Rules/deactivate_rule.sh $i > /dev/null
-done
+#echo "Setting container resources [cpu,mem,disk,net,energy] to unguarded"
+#for i in "${nodes[@]}"
+#do
+#    bash $RESCALER_PATH/Orchestrator/Structures/set_many_resource_to_unguarded.sh $i ${resources[@]} > /dev/null
+#done
+#
+#echo "Setting application resources [cpu,mem,disk,net,energy] to unguarded"
+#for j in "${resources[@]}"
+#do
+#    bash $RESCALER_PATH/Orchestrator/Structures/set_many_resource_to_unguarded.sh app1 ${resources[@]} > /dev/null
+#done
+#
+#echo "Deactivating resource rules"
+#for i in "${resource_rules[@]}"
+#do
+#    bash $RESCALER_PATH/Orchestrator/Rules/deactivate_rule.sh $i > /dev/null
+#done
+#
+#echo "Deactivating energy rules"
+#for i in "${energy_rules[@]}"
+#do
+#    bash $RESCALER_PATH/Orchestrator/Rules/deactivate_rule.sh $i > /dev/null
+#done

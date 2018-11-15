@@ -357,7 +357,7 @@
           "metric": "proc.cpu.user",
           "aggregator": "zimsum",
           "tags": [
-            "host=node5"
+            "host=node8"
           ]
         },
         {

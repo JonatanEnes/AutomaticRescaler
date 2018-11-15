@@ -32,7 +32,7 @@ if handler.database_exists("rules"):
             ]
             }),
         generates="events", action={"events": {"scale": {"up": 1}}},
-        active=False
+        active=True
     )
 
     cpu_dropped_lower = dict(
@@ -53,7 +53,7 @@ if handler.database_exists("rules"):
                     {"var": "structure.cpu.min"}]}]}),
         generates="events",
         action={"events": {"scale": {"down": 1}}},
-        active=False
+        active=True
     )
 
     handler.add_rule(cpu_exceeded_upper)
@@ -79,7 +79,7 @@ if handler.database_exists("rules"):
         action={"requests": ["CpuRescaleUp"]},
         amount=75,
         rescale_by="amount",
-        active=False
+        active=True
     )
 
     CpuRescaleDown = dict(
@@ -101,7 +101,7 @@ if handler.database_exists("rules"):
         action={"requests": ["CpuRescaleDown"]},
         amount=-20,
         rescale_by="fit_to_usage",
-        active=False,
+        active=True,
     )
 
     handler.add_rule(CpuRescaleUp)
@@ -129,7 +129,7 @@ if handler.database_exists("rules"):
             }),
         generates="events",
         action={"events": {"scale": {"up": 1}}},
-        active=False
+        active=True
     )
 
     mem_dropped_lower = dict(
@@ -150,7 +150,7 @@ if handler.database_exists("rules"):
                     {"var": "structure.mem.min"}]}]}),
         generates="events",
         action={"events": {"scale": {"down": 1}}},
-        active=False
+        active=True
     )
 
     handler.add_rule(mem_exceeded_upper)
@@ -175,7 +175,7 @@ if handler.database_exists("rules"):
         action={"requests": ["MemRescaleUp"]},
         amount=3072,
         rescale_by="amount",
-        active=False
+        active=True
     )
 
     MemRescaleDown = dict(
@@ -198,7 +198,7 @@ if handler.database_exists("rules"):
         amount=-512,
         percentage_reduction=50,
         rescale_by="fit_to_usage",
-        active=False
+        active=True
     )
 
     handler.add_rule(MemRescaleUp)
@@ -216,7 +216,7 @@ if handler.database_exists("rules"):
                     {"var": "structure.energy.usage"},
                     {"var": "structure.energy.max"}]}]}),
         generates="events", action={"events": {"scale": {"up": 1}}},
-        active=True
+        active=False
     )
     handler.add_rule(energy_exceeded_upper)
 
@@ -239,7 +239,7 @@ if handler.database_exists("rules"):
         action={"requests": ["CpuRescaleDown"]},
         amount=-20,
         rescale_by="proportional",
-        active=True
+        active=False
     )
     handler.add_rule(EnergyRescaleDown)
 
@@ -254,7 +254,7 @@ if handler.database_exists("rules"):
                     {"var": "structure.energy.usage"},
                     {"var": "structure.energy.max"}]}]}),
         generates="events", action={"events": {"scale": {"down": 1}}},
-        active=True
+        active=False
     )
     handler.add_rule(energy_dropped_lower)
 
@@ -277,6 +277,6 @@ if handler.database_exists("rules"):
         action={"requests": ["CpuRescaleUp"]},
         amount=20,
         rescale_by="proportional",
-        active=True
+        active=False
     )
     handler.add_rule(EnergyRescaleUp)
